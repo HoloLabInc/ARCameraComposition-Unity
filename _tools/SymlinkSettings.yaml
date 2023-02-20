@@ -1,0 +1,5 @@
+symlinks:
+
+  # Sample folder
+  - src: ..\packages\jp.co.hololab.arcameracomposition\Samples~
+    dest: ..\unity\ARCameraComposition\Assets\ARCameraComposition.Samples
