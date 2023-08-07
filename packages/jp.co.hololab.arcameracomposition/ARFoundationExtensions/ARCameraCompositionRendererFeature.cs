@@ -48,7 +48,7 @@ namespace UnityEngine.XR.ARFoundation
             if ((currentCamera != null) && (currentCamera.cameraType == CameraType.Game))
             {
                 ARCameraBackground cameraBackground = currentCamera.gameObject.GetComponent<ARCameraBackground>();
-                
+
                 if ((cameraBackground != null) && cameraBackground.backgroundRenderingEnabled
                                                && (cameraBackground.material != null))
                 {
@@ -123,7 +123,7 @@ namespace UnityEngine.XR.ARFoundation
                 ConfigureClear(ClearFlag.All, Color.clear);
 
                 commandBuffer.GetTemporaryRT(m_TemporaryARCameraTexture.id, renderTextureDescriptor);
-                ConfigureTarget(m_TemporaryColorTexture.Identifier());
+                ConfigureTarget(m_TemporaryARCameraTexture.Identifier());
                 ConfigureClear(ClearFlag.All, Color.black);
             }
 
