@@ -1,6 +1,6 @@
 {
   "name": "jp.co.hololab.arcameracomposition",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "displayName": "AR Camera Composition",
   "description": "A module for ARFoundation that enables compositing of AR content and camera image with adjustable transparency.",
   "unity": "2020.3",
