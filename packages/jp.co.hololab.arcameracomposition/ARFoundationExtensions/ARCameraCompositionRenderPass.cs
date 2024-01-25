@@ -6,12 +6,12 @@ namespace UnityEngine.XR.ARFoundation
 {
     public class ARCameraCompositionRenderPass : ScriptableRenderPass
     {
-        ProfilingSampler m_ProfilingSampler = new ProfilingSampler("ARCameraComposition");
-        Material m_Material;
-        RTHandle m_CameraColorTarget;
-        // float m_Intensity;
-        float m_opacity;
+        private ProfilingSampler m_ProfilingSampler = new ProfilingSampler("ARCameraComposition");
+        private Material m_Material;
+        private RTHandle m_CameraColorTarget;
+        private float m_opacity;
         private Material m_BackgroundMaterial;
+        private RTHandle m_Handle;
 
         public ARCameraCompositionRenderPass(Material material)
         {
@@ -23,7 +23,6 @@ namespace UnityEngine.XR.ARFoundation
         {
             m_CameraColorTarget = colorHandle;
             m_opacity = opacity;
-            // RenderingUtils.ReAllocateIfNeeded(ref m_CopiedColor, colorCopyDescriptor, name: "_FullscreenPassColorCopy");
         }
 
         public void Setup(ARCameraBackground cameraBackground)
@@ -36,19 +35,21 @@ namespace UnityEngine.XR.ARFoundation
             ConfigureTarget(m_CameraColorTarget);
         }
 
-        private RTHandle m_Handle;
 
         public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
         {
-            var cameraData = renderingData.cameraData;
-            if (cameraData.camera.cameraType != CameraType.Game)
-                return;
-
             if (m_Material == null)
+            {
                 return;
-
+            }
 
             if (m_BackgroundMaterial == null)
+            {
+                return;
+            }
+
+            var cameraData = renderingData.cameraData;
+            if (cameraData.camera.cameraType != CameraType.Game)
             {
                 return;
             }
@@ -62,9 +63,6 @@ namespace UnityEngine.XR.ARFoundation
             CommandBuffer cmd = CommandBufferPool.Get();
             using (new ProfilingScope(cmd, m_ProfilingSampler))
             {
-                // cmd.SetGlobalTexture("_ARCameraTex", m_BackgroundMaterial);
-                //Blitter.BlitCameraTexture(cmd, m_CameraColorTarget, m_CameraColorTarget, m_Material, 0);
-                //Blitter.BlitCameraTexture(cmd, m_CameraColorTarget, m_Handle, m_Material, 0);
                 Blitter.BlitCameraTexture(cmd, m_CameraColorTarget, m_Handle, 0);
                 cmd.SetGlobalTexture("_MainCameraTex", m_Handle);
 
@@ -80,9 +78,8 @@ namespace UnityEngine.XR.ARFoundation
             CommandBufferPool.Release(cmd);
         }
 
-        protected Matrix4x4 projectionMatrix => ARCameraBackgroundRenderingUtils.afterOpaquesOrthoProjection;
+        private Matrix4x4 projectionMatrix => ARCameraBackgroundRenderingUtils.afterOpaquesOrthoProjection;
 
-        /// <inheritdoc />
-        protected Mesh mesh => ARCameraBackgroundRenderingUtils.fullScreenFarClipMesh;
+        private Mesh mesh => ARCameraBackgroundRenderingUtils.fullScreenFarClipMesh;
     }
 }

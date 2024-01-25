@@ -13,6 +13,10 @@ namespace UnityEngine.XR.ARFoundation
 #if MODULE_URP_ENABLED
         public Shader m_Shader;
 
+        [SerializeField]
+        [Range(0, 1)]
+        private float opacity = 0.9f;
+
         public float Opacity { set; get; }
 
         Material m_Material;
