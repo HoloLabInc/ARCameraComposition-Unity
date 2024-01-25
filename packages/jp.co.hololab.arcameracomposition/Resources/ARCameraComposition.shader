@@ -30,11 +30,12 @@ Shader "AR Camera Composition/AR Camera Composition"
             #pragma vertex Vert
             #pragma fragment frag
 
-            // TEXTURE2D_X(_ARCameraTex);
-            // SAMPLER(sampler_ARCameraTex);
+            TEXTURE2D_X(_ARCameraTex);
+            SAMPLER(sampler_ARCameraTex);
 
-            TEXTURE2D_X(_CameraOpaqueTexture);
-            SAMPLER(sampler_CameraOpaqueTexture);
+            //TEXTURE2D_X(_CameraOpaqueTexture);
+            //SAMPLER(sampler_CameraOpaqueTexture);
+
             // TEXTURE2D_X(_MainTex);
             // SAMPLER(sampler_MainTex);
 
@@ -48,10 +49,13 @@ Shader "AR Camera Composition/AR Camera Composition"
                 UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
                 // float4 cameraColor = SAMPLE_TEXTURE2D_X(_ARCameraTex, sampler_ARCameraTex, input.texcoord);
                 // float4 mainColor = SAMPLE_TEXTURE2D_X(_MainTex, sampler_MainTex, input.texcoord);
-                float4 cameraColor = SAMPLE_TEXTURE2D_X(_CameraOpaqueTexture, sampler_CameraOpaqueTexture, input.texcoord);
+
+                 float4 cameraColor = SAMPLE_TEXTURE2D_X(_ARCameraTex, sampler_ARCameraTex, input.texcoord);
+                // float4 cameraColor = SAMPLE_TEXTURE2D_X(_CameraOpaqueTexture, sampler_CameraOpaqueTexture, input.texcoord);
                 float4 mainColor = SAMPLE_TEXTURE2D_X(_MainCameraTex, sampler_MainCameraTex, input.texcoord);
 
-                half mainAlpha = mainColor.a * _Opacity;
+                // half mainAlpha = mainColor.a * _Opacity;
+                half mainAlpha = _Opacity;
                 half cameraAlpha = 1 - mainAlpha;
 
                 float4 col = mainColor * mainAlpha + cameraColor * cameraAlpha;

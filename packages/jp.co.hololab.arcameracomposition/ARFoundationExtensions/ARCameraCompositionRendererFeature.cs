@@ -61,6 +61,7 @@ namespace UnityEngine.XR.ARFoundation
 
         public override void Create()
         {
+            Opacity = opacity;
             m_Material = CoreUtils.CreateEngineMaterial(m_Shader);
             m_RenderPass = new ARCameraCompositionRenderPass(m_Material);
         }

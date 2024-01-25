@@ -12,6 +12,7 @@ namespace UnityEngine.XR.ARFoundation
         private float m_opacity;
         private Material m_BackgroundMaterial;
         private RTHandle m_Handle;
+        private RTHandle m_Handle2;
 
         public ARCameraCompositionRenderPass(Material material)
         {
@@ -59,18 +60,25 @@ namespace UnityEngine.XR.ARFoundation
             desc.depthBufferBits = 0;
             RenderingUtils.ReAllocateIfNeeded(ref m_Handle, desc, FilterMode.Point,
                                                 TextureWrapMode.Clamp, name: "_CustomPassHandle");
+            RenderingUtils.ReAllocateIfNeeded(ref m_Handle2, desc, FilterMode.Point,
+                                                TextureWrapMode.Clamp, name: "_CustomPassHandle2");
 
             CommandBuffer cmd = CommandBufferPool.Get();
             using (new ProfilingScope(cmd, m_ProfilingSampler))
             {
                 Blitter.BlitCameraTexture(cmd, m_CameraColorTarget, m_Handle, 0);
-                cmd.SetGlobalTexture("_MainCameraTex", m_Handle);
+                m_Material.SetTexture(Shader.PropertyToID("_MainCameraTex"), m_Handle);
 
+                CoreUtils.SetRenderTarget(cmd, m_Handle2);
                 cmd.SetViewProjectionMatrices(Matrix4x4.identity, projectionMatrix);
                 cmd.DrawMesh(mesh, Matrix4x4.identity, m_BackgroundMaterial);
+                m_Material.SetTexture(Shader.PropertyToID("_ARCameraTex"), m_Handle2);
 
                 m_Material.SetFloat("_Opacity", m_opacity);
+
                 Blitter.BlitCameraTexture(cmd, m_Handle, m_CameraColorTarget, m_Material, 0);
+                // CoreUtils.SetRenderTarget(cmd, m_CameraColorTarget);
+                // CoreUtils.DrawFullScreen(cmd, m_Material);
             }
             context.ExecuteCommandBuffer(cmd);
             cmd.Clear();
