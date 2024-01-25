@@ -3,8 +3,8 @@ Shader "AR Camera Composition/AR Camera Composition"
     Properties
     {
         _Opacity("Opacity", Float) = 0.9
-        [HideInInspector]
-        _MainTex ("Texture", 2D) = "white" {}
+        // [HideInInspector]
+        // _MainTex ("Texture", 2D) = "white" {}
     }
     SubShader
     {
@@ -15,64 +15,47 @@ Shader "AR Camera Composition/AR Camera Composition"
         }
         LOD 100
 
-        Cull Off ZWrite Off ZTest Always
+        Cull Off ZWrite Off
 
         Pass
         {
-            Name "ForwardLit"
-
-            Tags
-            {
-                "LightMode"="UniversalForward"
-            }
+            Name "ARCameraCompositionPass"
 
             HLSLPROGRAM
-            #pragma vertex vert
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+            // The Blit.hlsl file provides the vertex shader (Vert),
+            // input structure (Attributes) and output strucutre (Varyings)
+            #include "Packages/com.unity.render-pipelines.core/Runtime/Utilities/Blit.hlsl"
+
+            #pragma vertex Vert
             #pragma fragment frag
 
-            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+            // TEXTURE2D_X(_ARCameraTex);
+            // SAMPLER(sampler_ARCameraTex);
 
-            struct appdata
-            {
-                float4 vertex : POSITION;
-                float2 uv : TEXCOORD0;
-            };
+            TEXTURE2D_X(_CameraOpaqueTexture);
+            SAMPLER(sampler_CameraOpaqueTexture);
+            // TEXTURE2D_X(_MainTex);
+            // SAMPLER(sampler_MainTex);
 
-            struct v2f
-            {
-                float2 uv : TEXCOORD0;
-                float4 vertex : SV_POSITION;
-            };
+            TEXTURE2D_X(_MainCameraTex);
+            SAMPLER(sampler_MainCameraTex);
 
-            TEXTURE2D(_MainTex);
-            SAMPLER(sampler_MainTex);
-            TEXTURE2D(_ARCameraTex);
-            SAMPLER(sampler_ARCameraTex);
-
-            CBUFFER_START(UnityPerMaterial)
-            float4 _MainTex_ST;
             half _Opacity;
-            CBUFFER_END
 
-            v2f vert(appdata v)
+            half4 frag(Varyings input) : SV_Target
             {
-                v2f o;
-                o.vertex = TransformObjectToHClip(v.vertex.xyz);
-                o.uv = TRANSFORM_TEX(v.uv, _MainTex);
-                return o;
-            }
-
-            float4 frag(v2f i) : SV_Target
-            {
-                float4 mainColor = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv);
-                float4 cameraColor = SAMPLE_TEXTURE2D(_ARCameraTex, sampler_ARCameraTex, i.uv);
+                UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
+                // float4 cameraColor = SAMPLE_TEXTURE2D_X(_ARCameraTex, sampler_ARCameraTex, input.texcoord);
+                // float4 mainColor = SAMPLE_TEXTURE2D_X(_MainTex, sampler_MainTex, input.texcoord);
+                float4 cameraColor = SAMPLE_TEXTURE2D_X(_CameraOpaqueTexture, sampler_CameraOpaqueTexture, input.texcoord);
+                float4 mainColor = SAMPLE_TEXTURE2D_X(_MainCameraTex, sampler_MainCameraTex, input.texcoord);
 
                 half mainAlpha = mainColor.a * _Opacity;
                 half cameraAlpha = 1 - mainAlpha;
 
                 float4 col = mainColor * mainAlpha + cameraColor * cameraAlpha;
                 col.a = 1;
-
                 return col;
             }
             ENDHLSL
