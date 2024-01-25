@@ -39,8 +39,8 @@ Shader "AR Camera Composition/AR Camera Composition"
             // TEXTURE2D_X(_MainTex);
             // SAMPLER(sampler_MainTex);
 
-            TEXTURE2D_X(_MainCameraTex);
-            SAMPLER(sampler_MainCameraTex);
+            // TEXTURE2D_X(_MainCameraTex);
+            // SAMPLER(sampler_MainCameraTex);
 
             half _Opacity;
 
@@ -52,7 +52,8 @@ Shader "AR Camera Composition/AR Camera Composition"
 
                  float4 cameraColor = SAMPLE_TEXTURE2D_X(_ARCameraTex, sampler_ARCameraTex, input.texcoord);
                 // float4 cameraColor = SAMPLE_TEXTURE2D_X(_CameraOpaqueTexture, sampler_CameraOpaqueTexture, input.texcoord);
-                float4 mainColor = SAMPLE_TEXTURE2D_X(_MainCameraTex, sampler_MainCameraTex, input.texcoord);
+                //float4 mainColor = SAMPLE_TEXTURE2D_X(_MainCameraTex, sampler_MainCameraTex, input.texcoord);
+                float4 mainColor = SAMPLE_TEXTURE2D_X(_BlitTexture, sampler_LinearRepeat, input.texcoord);
 
                 // half mainAlpha = mainColor.a * _Opacity;
                 half mainAlpha = _Opacity;

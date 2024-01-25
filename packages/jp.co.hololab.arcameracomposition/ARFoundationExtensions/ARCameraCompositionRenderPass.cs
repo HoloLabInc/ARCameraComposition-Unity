@@ -66,19 +66,14 @@ namespace UnityEngine.XR.ARFoundation
             CommandBuffer cmd = CommandBufferPool.Get();
             using (new ProfilingScope(cmd, m_ProfilingSampler))
             {
-                Blitter.BlitCameraTexture(cmd, m_CameraColorTarget, m_Handle, 0);
-                m_Material.SetTexture(Shader.PropertyToID("_MainCameraTex"), m_Handle);
+                m_Material.SetFloat("_Opacity", m_opacity);
 
                 CoreUtils.SetRenderTarget(cmd, m_Handle2);
                 cmd.SetViewProjectionMatrices(Matrix4x4.identity, projectionMatrix);
                 cmd.DrawMesh(mesh, Matrix4x4.identity, m_BackgroundMaterial);
                 m_Material.SetTexture(Shader.PropertyToID("_ARCameraTex"), m_Handle2);
 
-                m_Material.SetFloat("_Opacity", m_opacity);
-
-                Blitter.BlitCameraTexture(cmd, m_Handle, m_CameraColorTarget, m_Material, 0);
-                // CoreUtils.SetRenderTarget(cmd, m_CameraColorTarget);
-                // CoreUtils.DrawFullScreen(cmd, m_Material);
+                Blitter.BlitCameraTexture(cmd, m_CameraColorTarget, m_CameraColorTarget, m_Material, 0);
             }
             context.ExecuteCommandBuffer(cmd);
             cmd.Clear();
