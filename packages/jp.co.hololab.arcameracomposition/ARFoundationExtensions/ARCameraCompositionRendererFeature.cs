@@ -11,8 +11,6 @@ namespace UnityEngine.XR.ARFoundation
     public class ARCameraCompositionRendererFeature : ScriptableRendererFeature
     {
 #if MODULE_URP_ENABLED
-        public Shader m_Shader;
-
         [SerializeField]
         [Range(0, 1)]
         private float opacity = 0.9f;
@@ -29,16 +27,17 @@ namespace UnityEngine.XR.ARFoundation
             }
         }
 
-        Material m_Material;
+        private Material material;
+        private ARCameraCompositionRenderPass renderPass = null;
 
-        ARCameraCompositionRenderPass m_RenderPass = null;
+        private readonly string shaderName = "AR Camera Composition/AR Camera Composition";
 
         public override void AddRenderPasses(ScriptableRenderer renderer,
                                         ref RenderingData renderingData)
         {
             if (renderingData.cameraData.cameraType == CameraType.Game)
             {
-                renderer.EnqueuePass(m_RenderPass);
+                renderer.EnqueuePass(renderPass);
             }
         }
 
@@ -59,24 +58,31 @@ namespace UnityEngine.XR.ARFoundation
                         {
                             invertCulling = arCameraManager.subsystem?.invertCulling ?? false;
                         }
-                        m_RenderPass.SetUp(cameraBackground, invertCulling, Opacity);
+                        renderPass.SetUp(cameraBackground, invertCulling, Opacity);
                     }
                 }
             }
 
-            m_RenderPass.ConfigureInput(ScriptableRenderPassInput.Color);
-            m_RenderPass.SetRenderTarget(renderer.cameraColorTargetHandle);
+            renderPass.ConfigureInput(ScriptableRenderPassInput.Color);
+            renderPass.SetRenderTarget(renderer.cameraColorTargetHandle);
         }
 
         public override void Create()
         {
-            m_Material = CoreUtils.CreateEngineMaterial(m_Shader);
-            m_RenderPass = new ARCameraCompositionRenderPass(m_Material);
+            var shader = Shader.Find(shaderName);
+            if (shader == null)
+            {
+                Debug.LogError($"Shader {shaderName} not found");
+                return;
+            }
+
+            material = CoreUtils.CreateEngineMaterial(shader);
+            renderPass = new ARCameraCompositionRenderPass(material);
         }
 
         protected override void Dispose(bool disposing)
         {
-            CoreUtils.Destroy(m_Material);
+            CoreUtils.Destroy(material);
         }
 #endif
     }
