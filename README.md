@@ -6,15 +6,18 @@ AR Camera Composition is a module for AR Foundation that enables compositing of 
 
 ## Requirements
 
-- Universal Render Pipeline (URP)
+- Universal Render Pipeline (URP) 14 or higher
 - AR Foundation
+
+> [!NOTE]
+> If you are using URP 13 or lower, please use the [ARCameraComposition v0.2.0](https://github.com/HoloLabInc/ARCameraComposition-Unity/blob/v0.2.0/README.md).
 
 ## Install
 
 Open `Packages\manifest.json` and add this line in "dependencies".
 
 ```
-"jp.co.hololab.arcameracomposition": "https://github.com/HoloLabInc/ARCameraComposition-Unity.git?path=packages/jp.co.hololab.arcameracomposition",
+"jp.co.hololab.arcameracomposition": "https://github.com/HoloLabInc/ARCameraComposition-Unity.git?path=packages/jp.co.hololab.arcameracomposition#v1.0.0",
 ```
 
 ## Usage
