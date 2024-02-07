@@ -17,7 +17,17 @@ namespace UnityEngine.XR.ARFoundation
         [Range(0, 1)]
         private float opacity = 0.9f;
 
-        public float Opacity { set; get; }
+        public float Opacity
+        {
+            set
+            {
+                opacity = value;
+            }
+            get
+            {
+                return opacity;
+            }
+        }
 
         Material m_Material;
 
@@ -27,11 +37,12 @@ namespace UnityEngine.XR.ARFoundation
                                         ref RenderingData renderingData)
         {
             if (renderingData.cameraData.cameraType == CameraType.Game)
+            {
                 renderer.EnqueuePass(m_RenderPass);
+            }
         }
 
-        public override void SetupRenderPasses(ScriptableRenderer renderer,
-                                            in RenderingData renderingData)
+        public override void SetupRenderPasses(ScriptableRenderer renderer, in RenderingData renderingData)
         {
             if (renderingData.cameraData.cameraType == CameraType.Game)
             {
@@ -39,29 +50,26 @@ namespace UnityEngine.XR.ARFoundation
 
                 if (currentCamera != null)
                 {
-                    ARCameraBackground cameraBackground = currentCamera.gameObject.GetComponent<ARCameraBackground>();
+                    var cameraBackground = currentCamera.gameObject.GetComponent<ARCameraBackground>();
                     if ((cameraBackground != null) && cameraBackground.backgroundRenderingEnabled
                         && (cameraBackground.material != null))
-                    // && TrySelectRenderPassForBackgroundRenderMode(cameraBackground.currentRenderingMode, out var renderPass))
                     {
-                        // var invertCulling = cameraBackground.GetComponent<ARCameraManager>()?.subsystem?.invertCulling ?? false;
-                        // renderPass.Setup(cameraBackground, invertCulling);
-                        // renderer.EnqueuePass(renderPass);
-                        m_RenderPass.Setup(cameraBackground);
+                        var invertCulling = false;
+                        if (cameraBackground.TryGetComponent<ARCameraManager>(out var arCameraManager))
+                        {
+                            invertCulling = arCameraManager.subsystem?.invertCulling ?? false;
+                        }
+                        m_RenderPass.SetUp(cameraBackground, invertCulling, Opacity);
                     }
                 }
-
-
-                // Calling ConfigureInput with the ScriptableRenderPassInput.Color argument
-                // ensures that the opaque texture is available to the Render Pass.
-                m_RenderPass.ConfigureInput(ScriptableRenderPassInput.Color);
-                m_RenderPass.SetTarget(renderer.cameraColorTargetHandle, Opacity);
             }
+
+            m_RenderPass.ConfigureInput(ScriptableRenderPassInput.Color);
+            m_RenderPass.SetRenderTarget(renderer.cameraColorTargetHandle);
         }
 
         public override void Create()
         {
-            Opacity = opacity;
             m_Material = CoreUtils.CreateEngineMaterial(m_Shader);
             m_RenderPass = new ARCameraCompositionRenderPass(m_Material);
         }
