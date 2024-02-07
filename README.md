@@ -30,23 +30,17 @@ Select **Edit** > **Project Settings** > **Graphics** and assign the ARCameraCom
 
 <br>
 
-If you use your custom renderer pipeline asset, please add "AR Camera Composition Renderer Feature" to your renderer.
+If you use your custom renderer pipeline asset, please add "AR Background Renderer Feature" and "AR Camera Composition Renderer Feature" to your renderer.
 
-<img width="480" alt="Custom renderer" src="https://user-images.githubusercontent.com/4415085/220015858-2349b77a-10dd-453f-bbb6-7f570594c69a.png">
+<img width="480" alt="Custom renderer" src="https://github.com/HoloLabInc/ARCameraComposition-Unity/assets/4415085/21b82a24-46aa-415f-b48b-69c0c1c0a131">
 
-### a. Setup AR Camera in your scene
-
-Attach the ARCameraCompositionCameraConfigurator component to your AR Camera.
-
-<img width="480" alt="Attach ARCameraCompositionCameraConfigurator" src="https://github.com/HoloLabInc/ARCameraComposition-Unity/assets/4415085/1198d76d-f36a-4732-acc8-84d52bd1d0cd">
-
-### b. Try out the sample scene
+### Try out the sample scene
 
 Open the Package Manager window.  
 Select "AR Camera Composition" and press the "Import" button.
 
-<img width="480" alt="Import sample scene" src="https://user-images.githubusercontent.com/4415085/220215799-f1253dc5-efe7-4023-ae03-da2e8ae8720f.png">
+<img width="480" alt="Import sample scene" src="https://github.com/HoloLabInc/ARCameraComposition-Unity/assets/4415085/ebee5eec-a9d3-4350-843b-b737c52fb610">
 
 ## License
 
-Unity Companion License
+MIT
