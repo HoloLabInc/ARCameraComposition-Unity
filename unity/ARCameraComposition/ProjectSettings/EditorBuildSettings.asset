@@ -4,11 +4,16 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/ARCameraComposition.Samples/SampleScenes/ARCameraCompositionSample.unity
+    guid: 9fc0d4010bbf28b4594072e72b8655ab
   m_configObjects:
     UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: fae0d922db1fdbc4ca3dfef71588b496,
       type: 2}
     UnityEditor.XR.ARKit.ARKitSettings: {fileID: 11400000, guid: af2e500800f470a419d8e81960a845e0,
+      type: 2}
+    com.unity.xr.arfoundation.simulation_settings: {fileID: 11400000, guid: ea9b3444baa707442ad651250e616607,
       type: 2}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 066a520533045ad40aafebba8f75c94b,
       type: 2}
